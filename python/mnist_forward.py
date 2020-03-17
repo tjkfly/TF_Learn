@@ -1,10 +1,10 @@
 import  tensorflow as tf
 import os
-from tensorflow import keras
-from tensorflow.keras import datasets
+# from tensorflow import keras
+# from tensorflow.keras import datasets
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
-(x_train, y_train), (x_test, y_test) = datasets.mnist.load_data()
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 x_train = tf.convert_to_tensor(x_train,dtype=tf.float32) /255.
 y_train = tf.convert_to_tensor(y_train,dtype=tf.int32)
 x_test = tf.convert_to_tensor(x_test,dtype=tf.float32) /255.

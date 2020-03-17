@@ -33,7 +33,7 @@ model.build(input_shape=[None,28*28])
 model.summary()
 optimizer = optimizers.Adam(lr=1e-3)
 def main():
-	for epoch in range(10):
+	for epoch in range(5):
 		for step,(x,y) in enumerate(train_data):
 			x = tf.reshape(x,[-1,28*28])
 			with tf.GradientTape() as tape:
