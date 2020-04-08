@@ -1,0 +1,51 @@
+# 训练指标输出
+1  使用TensorBoard
+2  使用History类
+### TensorBorad
+TensorBoard的Scalars可以地使用简单的API可视化这些指标
+学习如何使用Keras TensorBoard回调和TensorFlow摘要API来可视化默认和自定义标量
+### 训练模型和评估
+记录训练中的损失值,需要执行以下操作：
+1. 创建KerasTensorBoard回调
+2. 指定日志目录
+3. 将TensorBoard回调传递Keras的Model.fit()
+```python
+tf.keras.callbacks.TensorBoard(
+           log_dir='logs', histogram_freq=0, write_graph=True, write_images=False,
+          update_freq='epoch', profile_batch=2, embeddings_freq=0,
+    embeddings_metadata=None, **kwargs
+)
+```
+##### 参数：
+1. **log_dir**：将要由TensorBoard解析的日志文件保存到的目录路径。
+2. **histogram_freq**：计算模型各层的激活度和权重直方图的频率（以历元计）。如果设置为0，将不计算直方图。必须为直方图可视化指定验证数据（或拆分）。
+3. **write_graph**：是否在TensorBoard中可视化图形。当write_graph设置为True时，日志文件可能会变得很大。
+4. **write_images**：是否编写模型权重以在TensorBoard中可视化为图像。
+5. **update_freq**：'batch'或'epoch'或整数。使用时'batch'，每批之后将损失和指标写入TensorBoard。同样适用于'epoch'。如果使用整数，假设1000，回调将每1000批将指标和损失写入TensorBoard。请注意，过于频繁地向TensorBoard写入可能会减慢您的训练速度。
+6. **profile_batch**：分析批次以采样计算特征。默认情况下，它将配置第二批。将profile_batch = 0设置为禁用分析。必须在TensorFlow急切模式下运行。
+7. **embeddings_freq**：嵌入层可视化的频率（以历元计）。如果设置为0，则嵌入将不可见。
+8. **embeddings_metadata**：将层名称映射到文件名的字典，该嵌入层的元数据保存在该文件名中。查看 有关元数据文件格式的 详细信息。如果相同的元数据文件用于所有嵌入层，则可以传递字符串。
+
+定义好回调函数后，在fit()函数中加入参数
+如下：
+```python
+ logdir = "logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
+ tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
+
+model = MyModel()
+model.build(input_shape=(None,28,28,1))
+model.summary()
+model.compile(optimizer=keras.optimizers.Adam(lr=0.01),
+        loss = tf.losses.SparseCategoricalCrossentropy(from_logits=True),
+        metrics=['accuracy']
+)
+history = model.fit(train_data,epochs=5,validation_data=test_data,validation_freq=1,
+             callbacks=[tensorboard_callback]
+  )
+```
+然后在终端，使用  `tensorboard --logdir   log/`,就是出现
+```
+Serving TensorBoard on localhost; to expose to the network, use a proxy or pass --bind_all
+TensorBoard 2.1.0 at http://localhost:6007/ (Press CTRL+C to quit)
+```
+进入连接即可
